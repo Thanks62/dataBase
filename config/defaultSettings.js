@@ -8,7 +8,7 @@ const proSettings = {
   "menu": {
     "locale": true
   },
-  "title": "Ant Design Pro",
+  "title": "云职",
   "pwa": false,
   "iconfontUrl": ""
 }
