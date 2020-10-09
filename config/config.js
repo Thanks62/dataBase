@@ -9,13 +9,13 @@ export default defineConfig({
   dva: {
     hmr: true,
   },
-  locale: {
-    // default zh-CN
-    default: 'zh-CN',
-    antd: true,
-    // default true, when it is true, will use `navigator.language` overwrite default
-    baseNavigator: true,
-  },
+  // locale: {
+  //   // default zh-CN
+  //   default: 'zh-CN',
+  //   antd: true,
+  //   // default true, when it is true, will use `navigator.language` overwrite default
+  //   baseNavigator: true,
+  // },
   dynamicImport: {
     loading: '@/components/PageLoading/index',
   },
@@ -36,57 +36,77 @@ export default defineConfig({
       ],
     },
     {
+      // path: '/',
+      // component: '../layouts/SecurityLayout',
+      // routes: [
+      //   {
       path: '/',
-      component: '../layouts/SecurityLayout',
+      component: '../layouts/BasicLayout',
+      // authority: ['admin', 'user'],
       routes: [
         {
           path: '/',
-          component: '../layouts/BasicLayout',
-          authority: ['admin', 'user'],
+          component: './Home',
+          name: '首页',
+        },
+        {
+          path: '/welcome',
+          name: 'welcome',
+          icon: 'smile',
+          component: './Welcome',
+        },
+        {
+          path: '/Emp',
+          name: '机构管理',
+          icon: 'appstore',
+          authority: ['admin'],
           routes: [
             {
-              path: '/',
-              redirect: '/welcome',
+              path: '/Emp/LessonManagement',
+              name: '课程管理',
+              component: './lessonManage',
             },
             {
-              path: '/welcome',
-              name: 'welcome',
-              icon: 'smile',
-              component: './Welcome',
-            },
-            {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
-              routes: [
-                {
-                  path: '/admin/sub-page',
-                  name: 'sub-page',
-                  icon: 'smile',
-                  component: './Welcome',
-                  authority: ['admin'],
-                },
-              ],
-            },
-            {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
-            },
-            {
-              name: '个人中心',
-              icon: 'smile',
-              path: '/accountcenter',
-              component: './AccountCenter',
-            },
-            {
-              component: './404',
+              path: '/Emp/TeacherManagement',
+              name: '讲师管理',
+              component: './teacherManage',
             },
           ],
         },
+        {
+          path: '/admin',
+          name: 'admin',
+          icon: 'crown',
+          component: './Admin',
+          authority: ['admin'],
+          routes: [
+            {
+              path: '/admin/sub-page',
+              name: 'sub-page',
+              icon: 'smile',
+              component: './Welcome',
+              authority: ['admin'],
+            },
+          ],
+        },
+        {
+          name: 'list.table-list',
+          icon: 'table',
+          path: '/list',
+          component: './ListTableList',
+        },
+        {
+          name: '个人中心',
+          icon: 'smile',
+          path: '/accountcenter',
+          authority: ['admin', 'user'],
+          component: './AccountCenter',
+        },
+        {
+          component: './404',
+        },
+        //   ],
+        // },
         {
           component: './404',
         },
@@ -107,5 +127,9 @@ export default defineConfig({
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
     basePath: '/',
+  },
+  nodeModulesTransform: {
+    type: 'none',
+    exclude: [],
   },
 });
