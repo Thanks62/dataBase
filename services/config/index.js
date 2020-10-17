@@ -6,14 +6,13 @@ const sequelize = new Sequelize('yunzhi', 'root', '123456', {
   dialect: 'mysql',
   port: 3306,
 });
-const Models = [require('../models/teacher'), require('../models/lesson')];
-// async function createModel() {
-//   for (const model of Models) {
-//     await model(sequelize, DataTypes).sync({ alter: true });
-//   }
-// }
+const Models = [
+  require('../models/teacher'),
+  require('../models/lesson'),
+  require('../models/occupation'),
+  require('../models/section'),
+];
 async function createAssiociation() {
-  // await createModel();
   for (const model of Models) {
     model(sequelize, DataTypes);
   }

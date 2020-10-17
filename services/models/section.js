@@ -1,23 +1,25 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('Teacher', {
-    teacherNo: {
+  return sequelize.define('Section', {
+    sectionID: {
       type: DataTypes.INTEGER.ZEROFILL,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    teacherImg: {
-      type: DataTypes.TEXT,
-    },
-    teacherName: {
+    sectionName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    teacherIntro: {
-      type: DataTypes.STRING,
+    duration: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
-    teacherId: {
-      type: DataTypes.STRING,
+    url: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    order: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   });

@@ -7,12 +7,39 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import styles from './index.less';
-import { createLesson, getLesson } from '../../services/lesson';
+import { getLesson, getSection } from '../../services/lesson';
+import SectionList from '@/components/SectionList';
+
 const { Meta } = Card;
 class Lesson extends React.Component {
+  state = {
+    sectionList: [],
+    listLoading: true,
+  };
+  fetchSections = () => {
+    this.setState({
+      listLoading: true,
+    });
+    getSection(this.props.data.lessonID)
+      .then((res) => {
+        this.setState({
+          sectionList: res.data,
+          listLoading: false,
+        });
+        this.detail();
+      })
+      .catch((err) => {
+        message.error(`获取列表失败：${err}`);
+        this.setState({
+          listLoading: false,
+        });
+      });
+  };
   detail = () => {
     const { data } = this.props;
+    const { sectionList, listLoading } = this.state;
     Modal.info({
+      width: 600,
       title: data.lessonName,
       content: (
         <>
@@ -33,6 +60,7 @@ class Lesson extends React.Component {
           ) : null}
           {data.lessonIntro ? <div>课程简介：{data.lessonIntro}</div> : null}
           {data.lessonPeriod ? <div>总学时：{data.lessonPeriod}</div> : null}
+          <SectionList sectionList={sectionList} listLoading={listLoading} from="Index" />
         </>
       ),
       onOk() {},
@@ -47,7 +75,7 @@ class Lesson extends React.Component {
           cover={<img alt={data.lessonName} src={data.lessonImg} />}
           actions={[
             <ShoppingCartOutlined key="购课" />,
-            <EllipsisOutlined onClick={this.detail} key="详情" />,
+            <EllipsisOutlined onClick={this.fetchSections} key="详情" />,
           ]}
         >
           <Skeleton loading={data.loading} active round>
@@ -138,9 +166,11 @@ export default class Home extends React.Component {
     return (
       <Card>
         <Row gutter={[16, 24]}>
-          {data.map((item) => {
-            return <Lesson key={item.lessonID} data={item} />;
-          })}
+          {data.map
+            ? data.map((item) => {
+                return <Lesson key={item.lessonID} data={item} />;
+              })
+            : null}
         </Row>
       </Card>
     );

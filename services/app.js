@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const sequelize = require('./config/index');
-const lessonController = require('./controller/lessonController');
-const teacherController = require('./controller/teacherController');
+const occupationController = require('./controller/occupationController');
+
 app = new express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,22 +28,15 @@ async function init() {
 }
 
 init();
-
-app.post('/api/getLesson', (req, res) => {
-  lessonController
-    .fetchLesson(sequelize)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-app.post('/api/createLesson', (req, res) => {
-  lessonController
-    .createLesson(sequelize, req.body)
+const modules = [require('./router/lesson')];
+for (let module of modules) {
+  module(app, sequelize);
+}
+app.get('/api/createOccupation', (req, res) => {
+  occupationController
+    .createOccupation(sequelize, req.query)
     .then(() => {
-      res.send({
+      res.status(200).send({
         status: 200,
       });
     })
@@ -51,31 +44,12 @@ app.post('/api/createLesson', (req, res) => {
       res.status(500).send(err);
     });
 });
-app.get('/api/deleteLesson', (req, res) => {
-  lessonController
-    .deleteLesson(sequelize, req.query)
-    .then(() => {
-      res.status(200).send();
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-app.post('/api/getTeacher', (req, res) => {
-  teacherController
-    .getTeacher(sequelize)
+app.get('/api/getOccupation', (req, res) => {
+  occupationController
+    .getOccupation(sequelize)
     .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-app.post('/api/createTeacher', (req, res) => {
-  teacherController
-    .createTeacher(sequelize, req.body)
-    .then(() => {
-      res.send({
+      res.status(200).send({
+        data,
         status: 200,
       });
     })
@@ -83,17 +57,16 @@ app.post('/api/createTeacher', (req, res) => {
       res.status(500).send(err);
     });
 });
-app.get('/api/deleteTeacher', (req, res) => {
-  teacherController
-    .deleteTeacher(sequelize, req.query)
+app.get('/api/deleteOccupation', (req, res) => {
+  occupationController
+    .deleteOccupation(sequelize, req.query)
     .then(() => {
-      res.status(200).send();
+      res.status(200).send({ status: 200 });
     })
     .catch((err) => {
       res.status(500).send(err);
     });
 });
-
 function getFakeCaptcha(req, res) {
   return res.json('captcha-xxx');
 } // 代码中会兼容本地 service mock 以及部署站点的静态数据

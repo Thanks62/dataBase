@@ -14,12 +14,15 @@ import {
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { getTeacher } from '../../../services/teacher';
 import { createLesson } from '../../../services/lesson';
+import { getOccupation } from '../../../services/occupation';
 
 export default class Create extends React.Component {
   state = {
     fileUrl: '',
     teacherList: [],
     teacherId: '',
+    occupationList: [],
+    occupationNo: '',
   };
   submit = (value) => {
     const rangeValue = value['lessonLast'];
@@ -28,16 +31,19 @@ export default class Create extends React.Component {
     const data = {
       lessonBegin,
       lessonLast,
-      teacherId: Number(this.state.teacherId),
+      teacherId: this.state.teacherId ? Number(this.state.teacherId) : null,
     };
     Object.assign(value, value, data);
     createLesson(value)
       .then((res) => {
         if (res.status === 200) {
           message.success(`课程 - ${value.lessonName} 创建成功!`);
+          this.props.changeBtnStatus(false);
+          this.props.setCurrentLesson(res.lessonID);
           this.props.next();
         } else {
           message.error('创建失败');
+          this.props.changeBtnStatus(true);
         }
       })
       .catch((err) => {
@@ -66,7 +72,12 @@ export default class Create extends React.Component {
   componentDidMount() {
     getTeacher().then((data) => {
       this.setState({
-        teacherList: data,
+        teacherList: data ? data : [],
+      });
+    });
+    getOccupation().then((res) => {
+      this.setState({
+        occupationList: res.data,
       });
     });
   }
@@ -75,8 +86,13 @@ export default class Create extends React.Component {
       teacherId: option.key,
     });
   };
+  handleSelect2 = (value, option) => {
+    this.setState({
+      occupationNo: option.key,
+    });
+  };
   render() {
-    const { fileUrl, teacherList } = this.state;
+    const { fileUrl, teacherList, occupationList } = this.state;
     const validateMessages = {
       required: '${label}为必填项',
       types: {
@@ -167,7 +183,7 @@ export default class Create extends React.Component {
             }}
             onChange={this.handleSelect}
           >
-            {teacherList.map((item) => {
+            {teacherList?.map((item) => {
               return (
                 <Select.Option key={item.teacherId} value={item.teacherName}>
                   {item.teacherImg ? (
@@ -185,6 +201,20 @@ export default class Create extends React.Component {
               找不到?
             </a>
           </Tooltip>
+        </Form.Item>
+        <Form.Item label="所属职业类型" name="occupationNo">
+          <Select
+            style={{ width: 260 }}
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) => {
+              return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+            }}
+          >
+            {occupationList?.map((item) => {
+              return <Select.Option value={item.occupationNo}>{item.occupationName}</Select.Option>;
+            })}
+          </Select>
         </Form.Item>
         <Form.Item
           name="lessonCost"
