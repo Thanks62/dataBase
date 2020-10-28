@@ -9,6 +9,16 @@ export default class CreateChapter extends React.Component {
     sectionList: [],
     listLoading: true,
   };
+  componentDidMount() {
+    if (this.props.from == 'edit') {
+      this.fetchSections();
+    }
+  }
+  componentWillReceiveProps() {
+    if (this.props.from == 'edit') {
+      this.fetchSections();
+    }
+  }
   submit = (value) => {
     const { lessonID } = this.props;
     if (lessonID == 0) {
@@ -66,7 +76,7 @@ export default class CreateChapter extends React.Component {
   deleteSection = (sectionID) => {
     deleteSection(sectionID)
       .then((res) => {
-        if (res == 200) {
+        if (res.status == 200) {
           message.success('删除成功');
           this.fetchSections();
         } else message.error('删除失败');
@@ -95,7 +105,6 @@ export default class CreateChapter extends React.Component {
     };
     return (
       <>
-        <div>{lessonID}</div>
         <Form validateMessages={validateMessages} onFinish={this.submit}>
           <Form.Item
             name="sectionName"
@@ -163,7 +172,11 @@ export default class CreateChapter extends React.Component {
           <Button type="primary" htmlType="submit">
             创建章节
           </Button>
-          <SectionList sectionList={sectionList} listLoading={listLoading} />
+          <SectionList
+            deleteSection={this.deleteSection}
+            sectionList={sectionList}
+            listLoading={listLoading}
+          />
         </Form>
       </>
     );

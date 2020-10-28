@@ -2,6 +2,7 @@ import React from 'react';
 import { Table, Button, Spin, Modal, message } from 'antd';
 import { getLesson, deleteLesson } from '../../services/lesson';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import EditLesson from './Components/EditLesson';
 const { confirm } = Modal;
 function DateFormatter(text) {
   const date = new Date(text);
@@ -12,6 +13,8 @@ export default class LessonList extends React.Component {
     data: [],
     loading: true,
     btnStatus: false,
+    visible: false,
+    editData: {},
   };
   componentDidMount() {
     this.fetchLesson();
@@ -29,7 +32,6 @@ export default class LessonList extends React.Component {
         });
       })
       .catch((err) => {
-        console.log(err);
         this.setState({
           loading: false,
           btnStatus: false,
@@ -64,8 +66,19 @@ export default class LessonList extends React.Component {
       onCancel() {},
     });
   }
+  onCloseModal = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+  onOpenModal = (record) => {
+    this.setState({
+      visible: true,
+      editData: record,
+    });
+  };
   render() {
-    const { data, loading, btnStatus } = this.state;
+    const { data, loading, btnStatus, visible, editData } = this.state;
     const columns = [
       {
         title: '课程封面',
@@ -133,7 +146,13 @@ export default class LessonList extends React.Component {
         key: 'operation',
         render: (text, record) => (
           <div style={{ lineHeight: '16px' }}>
-            <a>编辑</a>
+            <a
+              onClick={() => {
+                this.onOpenModal(record);
+              }}
+            >
+              编辑
+            </a>
             <br />
             <a
               onClick={() => {
@@ -160,6 +179,7 @@ export default class LessonList extends React.Component {
         <Spin spinning={loading}>
           <Table columns={columns} scroll={{ x: 1500 }} dataSource={data} />
         </Spin>
+        <EditLesson onClose={this.onCloseModal} visible={visible} data={editData} />
       </>
     );
   }

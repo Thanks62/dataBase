@@ -22,7 +22,7 @@ export default class SectionList extends React.Component {
                           <a
                             key="delete"
                             onClick={() => {
-                              this.deleteSection(item.sectionID);
+                              this.props.deleteSection(item.sectionID);
                             }}
                           >
                             删除

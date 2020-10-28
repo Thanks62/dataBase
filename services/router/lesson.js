@@ -4,8 +4,9 @@ const sectionController = require('../controller/sectionController');
 
 module.exports = (app, sequelize) => {
   app.post('/api/getLesson', (req, res) => {
+    console.log('----', req.query);
     lessonController
-      .fetchLesson(sequelize)
+      .fetchLesson(sequelize, req.query)
       .then((data) => {
         res.send(data);
       })
@@ -29,6 +30,18 @@ module.exports = (app, sequelize) => {
   app.get('/api/deleteLesson', (req, res) => {
     lessonController
       .deleteLesson(sequelize, req.query)
+      .then(() => {
+        res.status(200).send({
+          status: 200,
+        });
+      })
+      .catch((err) => {
+        res.status(500).send(err);
+      });
+  });
+  app.post('/api/editLesson', (req, res) => {
+    lessonController
+      .editLesson(sequelize, req.body)
       .then(() => {
         res.status(200).send({
           status: 200,
@@ -97,6 +110,18 @@ module.exports = (app, sequelize) => {
   app.get('/api/deleteTeacher', (req, res) => {
     teacherController
       .deleteTeacher(sequelize, req.query)
+      .then(() => {
+        res.status(200).send({
+          status: 200,
+        });
+      })
+      .catch((err) => {
+        res.status(500).send(err);
+      });
+  });
+  app.post('/api/editTeacher', (req, res) => {
+    teacherController
+      .editTeacher(sequelize, req.body)
       .then(() => {
         res.status(200).send({
           status: 200,

@@ -15,7 +15,22 @@ const teacherController = {
   addLesson: function addLesson() {},
   deleteTeacher: function deleteTeacher(sequelize, payload) {
     const { Teacher } = sequelize.models;
-    return Teacher.destroy({ where: { teacherId: payload.id } });
+    return Teacher.destroy({ where: { teacherNo: payload.id } });
+  },
+  editTeacher: async function editTeacher(sequelize, payload) {
+    const { Teacher } = sequelize.models;
+    const { teacherId, teacherImg, teacherIntro, teacherName, teacherNo } = payload;
+    return await Teacher.update(
+      {
+        teacherId,
+        teacherImg,
+        teacherIntro,
+        teacherName,
+      },
+      {
+        where: { teacherNo: teacherNo },
+      },
+    );
   },
 };
 module.exports = teacherController;

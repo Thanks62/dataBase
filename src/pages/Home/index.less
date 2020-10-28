@@ -1,4 +1,7 @@
 @import '~antd/es/style/themes/default.less';
+.banner_img {
+  border-radius: 15px;
+}
 .teacher {
   display: flex;
   margin: 10px 0;
@@ -6,4 +9,68 @@
   .teacher_info {
     margin-left: 10px;
   }
+}
+.category {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  .category_name {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 23px;
+    width: 180px;
+    text-align: center;
+    border-right: rgb(189, 189, 189) solid 0.5px;
+    line-height: 80px;
+  }
+  .category_ctn {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .category_ctn .category_wrap:nth-child(2) .category_img {
+    background-color: rgb(76, 195, 195);
+    background-image: linear-gradient(to bottom left, rgb(76, 195, 195), rgb(135, 224, 206));
+  }
+  .category_ctn .category_wrap:nth-child(3) .category_img {
+    background-color: rgb(232, 172, 100);
+    background-image: linear-gradient(to bottom left, rgb(232, 172, 100), rgb(235, 205, 137));
+  }
+  .category_ctn .category_wrap:nth-child(4) .category_img {
+    background-color: rgb(79, 138, 201);
+    background-image: linear-gradient(to bottom left, rgb(79, 138, 201), rgb(156, 211, 227));
+  }
+  .category_ctn .category_wrap:nth-child(5) .category_img {
+    background-color: rgb(152, 127, 243);
+    background-image: linear-gradient(to bottom left, rgb(152, 127, 243), rgb(190, 175, 244));
+  }
+  .category_ctn .category_wrap:first-child .category_img {
+    background-color: rgb(234, 118, 127);
+    background-image: linear-gradient(to bottom left, rgb(234, 118, 127), rgb(245, 164, 160));
+  }
+  .category_img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 73px;
+    display: inline-block;
+    cursor: pointer;
+  }
+  .category_wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+.hot_class {
+  font-weight: bold;
+  font-style: italic;
+  font-size: 23px;
+  width: 100%;
+  text-align: center;
+  line-height: 80px;
+  display: inline-block;
 }

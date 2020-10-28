@@ -1,15 +1,20 @@
 import React from 'react';
-import { Card, Row, Col, Rate, Skeleton, Modal, Avatar } from 'antd';
+import { Card, Row, Col, Rate, Skeleton, Modal, Avatar, Input, Carousel, Button } from 'antd';
 import {
   FireTwoTone,
   ShoppingCartOutlined,
   EllipsisOutlined,
   UserOutlined,
+  CodeTwoTone,
+  NotificationTwoTone,
+  DollarCircleTwoTone,
+  VideoCameraTwoTone,
+  InsuranceTwoTone,
 } from '@ant-design/icons';
 import styles from './index.less';
 import { getLesson, getSection } from '../../services/lesson';
 import SectionList from '@/components/SectionList';
-
+const { Search } = Input;
 const { Meta } = Card;
 class Lesson extends React.Component {
   state = {
@@ -60,6 +65,14 @@ class Lesson extends React.Component {
           ) : null}
           {data.lessonIntro ? <div>课程简介：{data.lessonIntro}</div> : null}
           {data.lessonPeriod ? <div>总学时：{data.lessonPeriod}</div> : null}
+          {data.lessonScore === 0 ? (
+            <div>暂无评分</div>
+          ) : (
+            <div>
+              评分：
+              <Rate disabled defaultValue={data.lessonScore} />
+            </div>
+          )}
           <SectionList sectionList={sectionList} listLoading={listLoading} from="Index" />
         </>
       ),
@@ -69,7 +82,7 @@ class Lesson extends React.Component {
   render() {
     const { data } = this.props;
     return (
-      <Col sm={12} lg={6}>
+      <Col sm={12} lg={6} xs={12}>
         <Card
           hoverable="true"
           cover={<img alt={data.lessonName} src={data.lessonImg} />}
@@ -82,19 +95,6 @@ class Lesson extends React.Component {
             <Meta
               avatar={data.lessonStuNum >= 1000 ? <FireTwoTone twoToneColor="#ff0000" /> : null}
               title={data.lessonName}
-              description={
-                <>
-                  {data.lessonIntro ? <div>课程简介：{data.lessonIntro}</div> : null}
-                  {data.lessonScore === 0 ? (
-                    <div>暂无评分</div>
-                  ) : (
-                    <div>
-                      评分：
-                      <Rate disabled defaultValue={data.lessonScore} />
-                    </div>
-                  )}
-                </>
-              }
             />
           </Skeleton>
         </Card>
@@ -149,30 +149,124 @@ export default class Home extends React.Component {
       //   lessonStuNum: 3400,
       // },
     ],
+    banner: [
+      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/212adc70-11d7-11eb-81ea-f115fe74321c.jpg',
+      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/207d1040-11d7-11eb-81ea-f115fe74321c.jpg',
+      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/1fb860b0-11d7-11eb-b997-9918a5dda011.jpg',
+      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/1e96c410-11d7-11eb-b997-9918a5dda011.jpg',
+      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/1dbfc500-11d7-11eb-b997-9918a5dda011.jpg',
+    ],
+    category: [
+      {
+        icon: <CodeTwoTone twoToneColor="orange" style={{ fontSize: '30px' }} />,
+        name: '计算机',
+      },
+      {
+        icon: <NotificationTwoTone twoToneColor="orange" style={{ fontSize: '30px' }} />,
+        name: '运营',
+      },
+      {
+        icon: <DollarCircleTwoTone twoToneColor="orange" style={{ fontSize: '30px' }} />,
+        name: '商业',
+      },
+      {
+        icon: <VideoCameraTwoTone twoToneColor="orange" style={{ fontSize: '30px' }} />,
+        name: '视频剪辑',
+      },
+      {
+        icon: <InsuranceTwoTone twoToneColor="orange" style={{ fontSize: '30px' }} />,
+        name: '法律',
+      },
+    ],
+    loadMoreState: true,
   };
   componentDidMount() {
-    getLesson()
+    getLesson({ limit: 12, offset: 0 })
       .then((data) => {
-        this.setState({
-          data,
-        });
+        if (data) {
+          this.setState({
+            data,
+            loadMoreState: true,
+          });
+        } else {
+          this.setState({
+            loadMoreState: false,
+          });
+        }
       })
       .catch((err) => {
         console.log(err);
       });
   }
+  loadMore = () => {
+    getLesson({ limit: 12, offset: this.state.data.length })
+      .then((res) => {
+        if (res.length != 0) {
+          this.setState({
+            data: this.state.data.concat(res),
+            loadMoreState: true,
+          });
+        } else {
+          this.setState({
+            loadMoreState: false,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   render() {
-    const { data } = this.state;
+    const { data, banner, category, loadMoreState } = this.state;
     return (
-      <Card>
-        <Row gutter={[16, 24]}>
-          {data.map
-            ? data.map((item) => {
-                return <Lesson key={item.lessonID} data={item} />;
-              })
-            : null}
-        </Row>
-      </Card>
+      <>
+        <Card>
+          <Row justify="center" gutter={[16, 16]}>
+            <Col span={14}>
+              <Search placeholder="JAVA高级课程" style={{ borderRadius: '20px', height: '40px' }} />
+            </Col>
+            <Col span={24}>
+              <Carousel autoplay>
+                {banner.map((item) => {
+                  return <img className={styles.banner_img} src={item} alt="CloudClass" />;
+                })}
+              </Carousel>
+            </Col>
+            <Col span={24} className={styles.category}>
+              <span className={styles.category_name}>热门分类</span>
+              <div className={styles.category_ctn}>
+                {category.map((item) => {
+                  return (
+                    <div className={styles.category_wrap}>
+                      <p className={styles.category_img} key={item.name}>
+                        {item.icon}
+                      </p>
+                      <span>{item.name}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </Col>
+            <Col span={24}>
+              <span className={styles.hot_class}>热门课程</span>
+              <Row gutter={[16, 24]}>
+                {data.length > 0
+                  ? data.map((item) => {
+                      return <Lesson key={item.lessonID} data={item} />;
+                    })
+                  : null}
+              </Row>
+            </Col>
+            <Col span={24} style={{ textAlign: 'center' }}>
+              {data.length >= 12 && loadMoreState ? (
+                <Button style={{ width: '350px' }} onClick={this.loadMore}>
+                  加载更多
+                </Button>
+              ) : null}
+            </Col>
+          </Row>
+        </Card>
+      </>
     );
   }
 }

@@ -2,12 +2,15 @@ import React from 'react';
 import { Table, Button, Spin, Modal, message, Avatar } from 'antd';
 import { getTeacher, deleteTeacher } from '../../services/teacher';
 import { ExclamationCircleOutlined, UserOutlined } from '@ant-design/icons';
+import EditCard from './Components/EditTeacher';
 const { confirm } = Modal;
 export default class TeacherList extends React.Component {
   state = {
     data: [],
     loading: true,
     btnStatus: false,
+    visible: false,
+    editData: {},
   };
   componentDidMount() {
     this.fetchTeacher();
@@ -38,6 +41,17 @@ export default class TeacherList extends React.Component {
     });
     this.fetchTeacher();
   };
+  hideEditForm = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+  showEditForm = (record) => {
+    this.setState({
+      visible: true,
+      editData: record,
+    });
+  };
   showDeleteConfirm(params) {
     let that = this;
     confirm({
@@ -61,7 +75,7 @@ export default class TeacherList extends React.Component {
     });
   }
   render() {
-    const { data, loading, btnStatus } = this.state;
+    const { data, loading, btnStatus, visible, editData } = this.state;
     const columns = [
       {
         title: '讲师头像',
@@ -104,11 +118,17 @@ export default class TeacherList extends React.Component {
         key: 'operation',
         render: (text, record) => (
           <div style={{ lineHeight: '16px' }}>
-            <a>编辑</a>
+            <a
+              onClick={() => {
+                this.showEditForm(record);
+              }}
+            >
+              编辑
+            </a>
             <br />
             <a
               onClick={() => {
-                this.showDeleteConfirm(record.teacherId);
+                this.showDeleteConfirm(record.teacherNo);
               }}
             >
               删除
@@ -131,6 +151,7 @@ export default class TeacherList extends React.Component {
         <Spin spinning={loading}>
           <Table columns={columns} dataSource={data} />
         </Spin>
+        <EditCard onClose={this.hideEditForm} visible={visible} data={editData} />
       </>
     );
   }

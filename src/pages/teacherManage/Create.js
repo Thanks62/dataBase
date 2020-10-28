@@ -1,24 +1,41 @@
 import React from 'react';
 import { Form, Upload, Input, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { getTeacher, createTeacher } from '../../services/teacher';
+import { getTeacher, createTeacher, editTeacher } from '../../services/teacher';
 
 export default class Create extends React.Component {
   state = {
     fileUrl: '',
   };
+  formRef = React.createRef();
   submit = (value) => {
-    createTeacher(value)
-      .then((res) => {
-        if (res.status === 200) {
-          message.success(`讲师 - ${value.teacherName} 创建成功!`);
-        } else {
-          message.error('创建失败');
-        }
-      })
-      .catch((err) => {
-        message.error(`错误：${err}`);
-      });
+    if (this.props.from == 'edit') {
+      Object.assign(value, { teacherNo: this.props.data.teacherNo });
+      console.log(value);
+      editTeacher(value)
+        .then((res) => {
+          if (res.status === 200) {
+            message.success('修改成功!');
+          } else {
+            message.error('创建失败');
+          }
+        })
+        .catch((err) => {
+          message.error(`错误：${err}`);
+        });
+    } else {
+      createTeacher(value)
+        .then((res) => {
+          if (res.status === 200) {
+            message.success(`讲师 - ${value.teacherName} 创建成功!`);
+          } else {
+            message.error('创建失败');
+          }
+        })
+        .catch((err) => {
+          message.error(`错误：${err}`);
+        });
+    }
   };
   handleChange = (e) => {
     this.setState({
@@ -39,6 +56,11 @@ export default class Create extends React.Component {
       message.error(`${info.fileList.name} file upload failed.`);
     }
   };
+  componentDidUpdate() {
+    if (this.props.from == 'edit') {
+      this.formRef.current.resetFields();
+    }
+  }
   componentDidMount() {
     getTeacher().then((data) => {
       this.setState({
@@ -53,6 +75,7 @@ export default class Create extends React.Component {
   };
   render() {
     const { fileUrl } = this.state;
+    const { from, data } = this.props;
     const validateMessages = {
       required: '${label}为必填项',
       types: {
@@ -72,8 +95,9 @@ export default class Create extends React.Component {
       onChange: this.handleFileChange,
     };
     return (
-      <Form validateMessages={validateMessages} onFinish={this.submit}>
+      <Form ref={this.formRef} validateMessages={validateMessages} onFinish={this.submit}>
         <Form.Item
+          initialValue={data?.teacherName}
           name="teacherName"
           label="讲师名"
           rules={[
@@ -86,6 +110,7 @@ export default class Create extends React.Component {
         </Form.Item>
         <Form.Item
           name="teacherId"
+          initialValue={data?.teacherId}
           label="工号"
           rules={[
             {
@@ -96,6 +121,7 @@ export default class Create extends React.Component {
           <Input style={{ width: 260 }} />
         </Form.Item>
         <Form.Item
+          initialValue={data?.teacherImg}
           name="teacherImg"
           label="头像"
           rules={[
@@ -116,11 +142,11 @@ export default class Create extends React.Component {
             }
           />
         </Form.Item>
-        <Form.Item name="teacherIntro" label="讲师简介">
+        <Form.Item initialValue={data?.teacherIntro} name="teacherIntro" label="讲师简介">
           <Input.TextArea allowClear style={{ width: 400 }} />
         </Form.Item>
         <Button type="primary" htmlType="submit">
-          创建
+          {from == 'edit' ? '编辑' : '创建'}
         </Button>
       </Form>
     );

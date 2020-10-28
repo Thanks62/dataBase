@@ -8,6 +8,7 @@ export async function createLesson(params) {
 export async function getLesson(params) {
   return request('/api/getLesson', {
     method: 'POST',
+    params,
   });
 }
 export async function deleteLesson(params) {
@@ -24,4 +25,10 @@ export async function deleteSection(params) {
 }
 export async function getSection(params) {
   return request(`/api/getSection?lessonID=${params}`);
+}
+export async function editLesson(params) {
+  return request(`/api/editLesson`, {
+    method: 'POST',
+    data: params ? params : null,
+  });
 }

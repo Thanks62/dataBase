@@ -13,3 +13,9 @@ export async function createTeacher(params) {
 export async function deleteTeacher(params) {
   return request(`/api/deleteTeacher?id=${params}`);
 }
+export async function editTeacher(params) {
+  return request('/api/editTeacher', {
+    method: 'POST',
+    data: params,
+  });
+}

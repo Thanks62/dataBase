@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+  Row,
+  Col,
   Form,
   Upload,
   Input,
@@ -13,9 +15,9 @@ import {
 } from 'antd';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { getTeacher } from '../../../services/teacher';
-import { createLesson } from '../../../services/lesson';
+import { createLesson, editLesson } from '../../../services/lesson';
 import { getOccupation } from '../../../services/occupation';
-
+import moment from 'moment';
 export default class Create extends React.Component {
   state = {
     fileUrl: '',
@@ -24,16 +26,8 @@ export default class Create extends React.Component {
     occupationList: [],
     occupationNo: '',
   };
-  submit = (value) => {
-    const rangeValue = value['lessonLast'];
-    const lessonBegin = rangeValue[0].format('YYYY-MM-DD');
-    const lessonLast = rangeValue[1].format('YYYY-MM-DD');
-    const data = {
-      lessonBegin,
-      lessonLast,
-      teacherId: this.state.teacherId ? Number(this.state.teacherId) : null,
-    };
-    Object.assign(value, value, data);
+  formRef = React.createRef();
+  createLesson = (value) => {
     createLesson(value)
       .then((res) => {
         if (res.status === 200) {
@@ -49,6 +43,34 @@ export default class Create extends React.Component {
       .catch((err) => {
         message.error(`错误：${err}`);
       });
+  };
+  editLesson = (value) => {
+    Object.assign(value, { lessonID: this.props.data.lessonID });
+    editLesson(value)
+      .then((res) => {
+        if (res.status === 200) {
+          message.success(`课程 - ${value.lessonName} 修改成功!`);
+        } else {
+          message.error('修改失败');
+        }
+      })
+      .catch((err) => {
+        message.error(`错误：${err}`);
+      });
+  };
+  submit = (value) => {
+    const rangeValue = value['lessonLast'];
+    const lessonBegin = rangeValue[0].format('YYYY-MM-DD');
+    const lessonLast = rangeValue[1].format('YYYY-MM-DD');
+    const data = {
+      lessonBegin,
+      lessonLast,
+      teacherId: this.state.teacherId ? Number(this.state.teacherId) : null,
+    };
+    Object.assign(value, value, data);
+    console.log(value);
+    if (this.props.from == 'edit') this.editLesson(value);
+    else this.createLesson(value);
   };
   handleChange = (e) => {
     this.setState({
@@ -82,6 +104,7 @@ export default class Create extends React.Component {
     });
   }
   handleSelect = (value, option) => {
+    console.log(value);
     this.setState({
       teacherId: option.key,
     });
@@ -91,8 +114,14 @@ export default class Create extends React.Component {
       occupationNo: option.key,
     });
   };
+  componentDidUpdate() {
+    if (this.props.from == 'edit') {
+      this.formRef.current.resetFields();
+    }
+  }
   render() {
     const { fileUrl, teacherList, occupationList } = this.state;
+    const { from, data } = this.props;
     const validateMessages = {
       required: '${label}为必填项',
       types: {
@@ -112,126 +141,166 @@ export default class Create extends React.Component {
       onChange: this.handleFileChange,
     };
     return (
-      <Form validateMessages={validateMessages} onFinish={this.submit}>
-        <Form.Item
-          name="lessonName"
-          label="课程名"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input style={{ width: 260 }} />
-        </Form.Item>
-        <Form.Item name="lessonIntro" label="课程简介">
-          <Input.TextArea allowClear />
-        </Form.Item>
-        <Form.Item
-          name="lessonImg"
-          label="课程封面"
-          rules={[
-            {
-              required: true,
-            },
-            {
-              type: 'url',
-            },
-          ]}
-        >
-          <Input
-            placeholder="封面地址"
-            style={{ width: 260 }}
-            value={fileUrl}
-            onChange={this.handleChange}
-            suffix={
-              <Upload {...props} showUploadList={false} accept=".jpeg,.jpg,.png">
-                <UploadOutlined />
-              </Upload>
-            }
-          />
-        </Form.Item>
-        <Form.Item name="lessonLast" label="开课时间" {...rangeConfig}>
-          <DatePicker.RangePicker />
-        </Form.Item>
-        <Form.Item
-          name="lessonPeriod"
-          label="总课时"
-          rules={[
-            {
-              type: 'number',
-            },
-            {
-              required: true,
-            },
-          ]}
-        >
-          <InputNumber style={{ width: 260 }} />
-        </Form.Item>
-        <Form.Item label="讲师" name="teacher">
-          <Select
-            style={{ width: 260 }}
-            showSearch
-            optionLabelProp="value"
-            optionFilterProp="value"
-            filterOption={(input, option) => {
-              return (
-                option.children[option.children.length - 1]
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
-              );
-            }}
-            onChange={this.handleSelect}
-          >
-            {teacherList?.map((item) => {
-              return (
-                <Select.Option key={item.teacherId} value={item.teacherName}>
-                  {item.teacherImg ? (
-                    <Avatar src={item.teacherImg} />
-                  ) : (
-                    <Avatar icon={<UserOutlined />} />
-                  )}{' '}
-                  {item.teacherName}
-                </Select.Option>
-              );
-            })}
-          </Select>
-          <Tooltip title="请到讲师管理目录下添加讲师">
-            <a href="#API" style={{ margin: '0 8px' }}>
-              找不到?
-            </a>
-          </Tooltip>
-        </Form.Item>
-        <Form.Item label="所属职业类型" name="occupationNo">
-          <Select
-            style={{ width: 260 }}
-            showSearch
-            optionFilterProp="children"
-            filterOption={(input, option) => {
-              return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-            }}
-          >
-            {occupationList?.map((item) => {
-              return <Select.Option value={item.occupationNo}>{item.occupationName}</Select.Option>;
-            })}
-          </Select>
-        </Form.Item>
-        <Form.Item
-          name="lessonCost"
-          label="课程售价"
-          rules={[
-            {
-              type: 'number',
-            },
-            {
-              required: true,
-            },
-          ]}
-        >
-          <InputNumber style={{ width: 260 }} suffix="RMB" />
-        </Form.Item>
+      <Form ref={this.formRef} validateMessages={validateMessages} onFinish={this.submit}>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              name="lessonName"
+              label="课程名"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+              initialValue={data?.lessonName}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="lessonImg"
+              label="课程封面"
+              initialValue={data?.lessonImg}
+              rules={[
+                {
+                  required: true,
+                },
+                {
+                  type: 'url',
+                },
+              ]}
+            >
+              <Input
+                placeholder="封面地址"
+                value={fileUrl}
+                onChange={this.handleChange}
+                suffix={
+                  <Upload {...props} showUploadList={false} accept=".jpeg,.jpg,.png">
+                    <UploadOutlined />
+                  </Upload>
+                }
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              initialValue={[
+                moment(data?.lessonBegin || new Date(), 'YYYY/MM/DD'),
+                moment(data?.lessonLast || new Date(), 'YYYY/MM/DD'),
+              ]}
+              name="lessonLast"
+              label="开课时间"
+              {...rangeConfig}
+            >
+              <DatePicker.RangePicker />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="lessonCost"
+              label="课程售价"
+              initialValue={data?.lessonCost}
+              rules={[
+                {
+                  type: 'number',
+                },
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <InputNumber style={{ width: 260 }} suffix="RMB" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="讲师" name="teacher">
+              <Select
+                defaultValue={data?.Teacher?.teacherName}
+                style={{ width: 230 }}
+                showSearch
+                optionLabelProp="value"
+                optionFilterProp="value"
+                filterOption={(input, option) => {
+                  return (
+                    option.children[option.children.length - 1]
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  );
+                }}
+                onChange={this.handleSelect}
+              >
+                {teacherList?.map((item) => {
+                  return (
+                    <Select.Option key={item.teacherId} value={item.teacherName}>
+                      {item.teacherImg ? (
+                        <Avatar src={item.teacherImg} />
+                      ) : (
+                        <Avatar icon={<UserOutlined />} />
+                      )}{' '}
+                      {item.teacherName}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+              <Tooltip title="请到讲师管理目录下添加讲师">
+                <a href="#API" style={{ margin: '0 8px' }}>
+                  找不到?
+                </a>
+              </Tooltip>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="所属职业类型" name="occupationNo">
+              <Select
+                defaultValue={data?.Occupation?.occupationName}
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) => {
+                  return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+              >
+                {occupationList?.map((item) => {
+                  return (
+                    <Select.Option value={item.occupationNo}>{item.occupationName}</Select.Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              name="lessonPeriod"
+              label="总课时"
+              initialValue={data?.lessonPeriod}
+              rules={[
+                {
+                  type: 'number',
+                },
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <InputNumber />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item name="lessonIntro" label="课程简介" initialValue={data?.lessonIntro}>
+              <Input.TextArea allowClear />
+            </Form.Item>
+          </Col>
+        </Row>
         <Button type="primary" htmlType="submit">
-          创建课程
+          {from == 'edit' ? '编辑' : '创建课程'}
         </Button>
       </Form>
     );
