@@ -4,7 +4,6 @@ const sectionController = require('../controller/sectionController');
 
 module.exports = (app, sequelize) => {
   app.post('/api/getLesson', (req, res) => {
-    console.log('----', req.query);
     lessonController
       .fetchLesson(sequelize, req.query)
       .then((data) => {

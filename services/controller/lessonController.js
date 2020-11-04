@@ -31,7 +31,6 @@ exports.createLesson = async function createLesson(sequelize, payload) {
   return lesson.lessonID;
 };
 exports.fetchLesson = function fetchLesson(sequelize, req) {
-  console.log('====', req);
   const { offset, limit } = req;
   return sequelize.models.Lesson.findAll({
     include: [

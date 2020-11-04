@@ -36,77 +36,77 @@ export default defineConfig({
       ],
     },
     {
-      // path: '/',
-      // component: '../layouts/SecurityLayout',
-      // routes: [
-      //   {
       path: '/',
-      component: '../layouts/BasicLayout',
-      // authority: ['admin', 'user'],
+      component: '../layouts/SecurityLayout',
       routes: [
         {
           path: '/',
-          component: './Home',
-          name: '首页',
-        },
-        {
-          path: '/welcome',
-          name: 'welcome',
-          icon: 'smile',
-          component: './Welcome',
-        },
-        {
-          path: '/Emp',
-          name: '机构管理',
-          icon: 'appstore',
-          authority: ['admin'],
+          component: '../layouts/BasicLayout',
+          // authority: ['admin', 'user'],
           routes: [
             {
-              path: '/Emp/LessonManagement',
-              name: '课程管理',
-              component: './lessonManage',
+              path: '/',
+              component: './Home',
+              name: '首页',
             },
             {
-              path: '/Emp/TeacherManagement',
-              name: '讲师管理',
-              component: './teacherManage',
-            },
-          ],
-        },
-        {
-          path: '/admin',
-          name: 'admin',
-          icon: 'crown',
-          component: './Admin',
-          authority: ['admin'],
-          routes: [
-            {
-              path: '/admin/sub-page',
-              name: 'sub-page',
+              path: '/welcome',
+              name: 'welcome',
               icon: 'smile',
               component: './Welcome',
+            },
+            {
+              path: '/Emp',
+              name: '机构管理',
+              icon: 'appstore',
+              authority: ['admin', 'employee'],
+              routes: [
+                {
+                  path: '/Emp/LessonManagement',
+                  name: '课程管理',
+                  component: './lessonManage',
+                },
+                {
+                  path: '/Emp/TeacherManagement',
+                  name: '讲师管理',
+                  component: './teacherManage',
+                },
+              ],
+            },
+            {
+              path: '/admin',
+              name: 'admin',
+              icon: 'crown',
+              component: './Admin',
               authority: ['admin'],
+              routes: [
+                {
+                  path: '/admin/sub-page',
+                  name: 'sub-page',
+                  icon: 'smile',
+                  component: './Welcome',
+                  authority: ['admin'],
+                },
+              ],
+            },
+            {
+              name: 'list.table-list',
+              icon: 'table',
+              path: '/list',
+              component: './ListTableList',
+            },
+            {
+              name: '个人中心',
+              icon: 'smile',
+              path: '/accountcenter',
+              authority: ['admin', 'user', 'employee'],
+              component: './AccountCenter',
+            },
+            {
+              component: './404',
             },
           ],
         },
-        {
-          name: 'list.table-list',
-          icon: 'table',
-          path: '/list',
-          component: './ListTableList',
-        },
-        {
-          name: '个人中心',
-          icon: 'smile',
-          path: '/accountcenter',
-          authority: ['admin', 'user'],
-          component: './AccountCenter',
-        },
-        {
-          component: './404',
-        },
-        //   ],
-        // },
         {
           component: './404',
         },

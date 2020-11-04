@@ -150,11 +150,9 @@ export default class Home extends React.Component {
       // },
     ],
     banner: [
-      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/212adc70-11d7-11eb-81ea-f115fe74321c.jpg',
-      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/207d1040-11d7-11eb-81ea-f115fe74321c.jpg',
-      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/1fb860b0-11d7-11eb-b997-9918a5dda011.jpg',
-      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/1e96c410-11d7-11eb-b997-9918a5dda011.jpg',
-      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/1dbfc500-11d7-11eb-b997-9918a5dda011.jpg',
+      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/e6c98620-19d4-11eb-b997-9918a5dda011.jpg',
+      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/106d0240-19d5-11eb-b997-9918a5dda011.jpg',
+      'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/16caf3e0-19d5-11eb-8ff1-d5dcf8779628.jpg',
     ],
     category: [
       {

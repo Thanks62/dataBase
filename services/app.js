@@ -28,7 +28,7 @@ async function init() {
 }
 
 init();
-const modules = [require('./router/lesson')];
+const modules = [require('./router/lesson'), require('./router/login')];
 for (let module of modules) {
   module(app, sequelize);
 }
@@ -147,41 +147,41 @@ app.get('/api/users', (req, res) => {
   ];
   res.send(users);
 });
-app.post('/api/login/account', (req, res) => {
-  const { password, userName, type } = req.body;
-  if (password === 'ant.design' && userName === 'admin') {
-    res.send({
-      status: 'ok',
-      type,
-      currentAuthority: 'admin',
-    });
-    return;
-  }
+// app.post('/api/login/account', (req, res) => {
+//   const { password, userName, type } = req.body;
+//   if (password === 'ant.design' && userName === 'admin') {
+//     res.send({
+//       status: 'ok',
+//       type,
+//       currentAuthority: 'admin',
+//     });
+//     return;
+//   }
 
-  if (password === 'ant.design' && userName === 'user') {
-    res.send({
-      status: 'ok',
-      type,
-      currentAuthority: 'user',
-    });
-    return;
-  }
+//   if (password === 'ant.design' && userName === 'user') {
+//     res.send({
+//       status: 'ok',
+//       type,
+//       currentAuthority: 'user',
+//     });
+//     return;
+//   }
 
-  if (type === 'mobile') {
-    res.send({
-      status: 'ok',
-      type,
-      currentAuthority: 'admin',
-    });
-    return;
-  }
+//   if (type === 'mobile') {
+//     res.send({
+//       status: 'ok',
+//       type,
+//       currentAuthority: 'admin',
+//     });
+//     return;
+//   }
 
-  res.send({
-    status: 'error',
-    type,
-    currentAuthority: 'guest',
-  });
-});
+//   res.send({
+//     status: 'error',
+//     type,
+//     currentAuthority: 'guest',
+//   });
+// });
 app.post('/api/register', (req, res) => {
   res.send({
     status: 'ok',

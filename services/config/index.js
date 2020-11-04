@@ -11,6 +11,10 @@ const Models = [
   require('../models/lesson'),
   require('../models/occupation'),
   require('../models/section'),
+  require('../models/employer'),
+  require('../models/admin'),
+  require('../models/member'),
+  require('../models/organization'),
 ];
 async function createAssiociation() {
   for (const model of Models) {
