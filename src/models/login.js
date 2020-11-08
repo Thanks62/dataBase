@@ -1,8 +1,15 @@
 import { stringify } from 'querystring';
 import { history } from 'umi';
-import { UserLogin, EmployeeLogin, AdminLogin } from '@/services/login';
+import { UserLogin, EmployeeLogin, AdminLogin, Logout } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
+// 存储token
+function setToken(token) {
+  window.localStorage.setItem('token', token);
+}
+function cleanToken() {
+  if (window.localStorage.getItem('token')) window.localStorage.removeItem('token');
+}
 const Model = {
   namespace: 'login',
   state: {
@@ -102,16 +109,18 @@ const Model = {
       }
     },
 
-    logout() {
+    *logout({ payload }, { call, put }) {
+      const response = yield call(Logout);
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
-
-      if (window.location.pathname !== '/user/login' && !redirect) {
-        history.replace({
-          pathname: '/user/login',
-          search: stringify({
-            redirect: window.location.href,
-          }),
-        });
+      if (response.status == 'ok') {
+        if (window.location.pathname !== '/user/login' && !redirect) {
+          history.replace({
+            pathname: '/user/login',
+            search: stringify({
+              redirect: window.location.href,
+            }),
+          });
+        }
       }
     },
   },

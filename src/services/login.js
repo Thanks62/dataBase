@@ -20,3 +20,13 @@ export async function AdminLogin(params) {
 export async function getFakeCaptcha(mobile) {
   return request(`/api/login/captcha?mobile=${mobile}`);
 }
+export async function Logout() {
+  return request('/api/logout');
+}
+export async function registerUser(payload) {
+  console.log(payload);
+  return request('/api/register/member', {
+    method: 'POST',
+    data: payload,
+  });
+}

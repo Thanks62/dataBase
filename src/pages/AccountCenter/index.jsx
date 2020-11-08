@@ -1,9 +1,9 @@
-import { PlusOutlined, HomeOutlined, ContactsOutlined, ClusterOutlined } from '@ant-design/icons';
+import { PlusOutlined, HomeOutlined, ContactsOutlined, ClusterOutlined,CalendarOutlined,IdcardOutlined,BankOutlined } from '@ant-design/icons';
 import { Avatar, Card, Col, Divider, Input, Row, Tag } from 'antd';
 import React, { Component, useState, useRef } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 import { Link, connect } from 'umi';
-import Projects from './components/Projects';
+import logo from '../../../public/icons/icon-192x192.png';
 import Articles from './components/Articles';
 import Applications from './components/Applications';
 import styles from './Center.less';
@@ -12,7 +12,7 @@ const operationTabList = [
     key: 'articles',
     tab: (
       <span>
-        文章{' '}
+        课程{' '}
         <span
           style={{
             fontSize: 14,
@@ -27,22 +27,7 @@ const operationTabList = [
     key: 'applications',
     tab: (
       <span>
-        应用{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          (8)
-        </span>
-      </span>
-    ),
-  },
-  {
-    key: 'projects',
-    tab: (
-      <span>
-        项目{' '}
+        赞过的文章{' '}
         <span
           style={{
             fontSize: 14,
@@ -166,9 +151,6 @@ class AccountCenter extends Component {
     });
   };
   renderChildrenByTabKey = (tabKey) => {
-    if (tabKey === 'projects') {
-      return <Projects />;
-    }
 
     if (tabKey === 'applications') {
       return <Applications />;
@@ -188,41 +170,46 @@ class AccountCenter extends Component {
             marginRight: 8,
           }}
         />
-        {currentUser.title}
+        {currentUser.name||currentUser.employeeName||currentUser.adminName}
       </p>
-      <p>
+      {(currentUser.employeeNo||currentUser.adminNo)?<p>
         <ClusterOutlined
           style={{
             marginRight: 8,
           }}
         />
-        {currentUser.group}
-      </p>
-      <p>
+        工号：
+        {currentUser.employeeNo||currentUser.adminNo}
+      </p>:null}
+      {currentUser.email?<p>
         <HomeOutlined
           style={{
             marginRight: 8,
           }}
         />
-        {
-          (
-            currentUser.geographic || {
-              province: {
-                label: '',
-              },
-            }
-          ).province.label
-        }
-        {
-          (
-            currentUser.geographic || {
-              city: {
-                label: '',
-              },
-            }
-          ).city.label
-        }
-      </p>
+        {currentUser.email}
+      </p>:null}
+      {currentUser.school?<p>
+        <BankOutlined style={{
+            marginRight: 8,
+          }} />
+          学校:
+        {currentUser.school}
+      </p>:null}
+      {currentUser.birthday?<p>
+        <CalendarOutlined  style={{
+            marginRight: 8,
+          }} />
+          生日:
+        {new Date(currentUser.birthday).toLocaleDateString()}
+      </p>:null}
+      {currentUser.idNum?<p>
+        <IdcardOutlined style={{
+            marginRight: 8,
+          }} />
+          身份证:
+        {currentUser.idNum}
+      </p>:null}
     </div>
   );
 
@@ -244,9 +231,9 @@ class AccountCenter extends Component {
               {!dataLoading && (
                 <div>
                   <div className={styles.avatarHolder}>
-                    <img alt="" src={currentUser.avatar} />
-                    <div className={styles.name}>{currentUser.name}</div>
-                    <div>{currentUser.signature}</div>
+                    <img alt="" src={currentUser.avatar||logo} />
+                    <div className={styles.name}>{currentUser.userName||currentUser.employeeName||currentUser.adminName}</div>
+                    <div>{currentUser.userPhone||currentUser.employeePhone||currentUser.adminPhone}</div>
                   </div>
                   {this.renderUserInfo(currentUser)}
                   <Divider dashed />
@@ -257,20 +244,6 @@ class AccountCenter extends Component {
                     }}
                     dashed
                   />
-                  <div className={styles.team}>
-                    <div className={styles.teamTitle}>团队</div>
-                    <Row gutter={36}>
-                      {currentUser.notice &&
-                        currentUser.notice.map((item) => (
-                          <Col key={item.id} lg={24} xl={12}>
-                            <Link to={item.href}>
-                              <Avatar size="small" src={item.logo} />
-                              {item.member}
-                            </Link>
-                          </Col>
-                        ))}
-                    </Row>
-                  </div>
                 </div>
               )}
             </Card>
