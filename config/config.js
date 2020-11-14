@@ -53,12 +53,7 @@ export default defineConfig({
               path: '/',
               component: './Home',
               name: '首页',
-            },
-            {
-              path: '/welcome',
-              name: 'welcome',
               icon: 'smile',
-              component: './Welcome',
             },
             {
               path: '/Emp',
@@ -79,33 +74,17 @@ export default defineConfig({
               ],
             },
             {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
-              routes: [
-                {
-                  path: '/admin/sub-page',
-                  name: 'sub-page',
-                  icon: 'smile',
-                  component: './Welcome',
-                  authority: ['admin'],
-                },
-              ],
-            },
-            {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
-            },
-            {
               name: '个人中心',
               icon: 'smile',
               path: '/accountcenter',
               authority: ['admin', 'user', 'employee'],
               component: './AccountCenter',
+            },
+            {
+              name: '课程',
+              path: '/lesson',
+              component: './Lesson',
+              hideInMenu: true,
             },
             {
               component: './404',

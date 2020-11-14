@@ -43,9 +43,6 @@ export default class Register extends React.Component {
         if (window.location.pathname !== '/user/login') {
           history.replace({
             pathname: '/user/login',
-            search: stringify({
-              redirect: window.location.href,
-            }),
           });
         }
       } else {

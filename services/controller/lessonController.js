@@ -1,5 +1,5 @@
 exports.createLesson = async function createLesson(sequelize, payload) {
-  const { Lesson, Teacher, Occupation } = sequelize.models;
+  const { Lesson, Teacher, Occupation, Organization } = sequelize.models;
   const {
     lessonName,
     lessonImg,
@@ -10,6 +10,7 @@ exports.createLesson = async function createLesson(sequelize, payload) {
     lessonCost,
     teacherId,
     occupationNo,
+    orgID,
   } = payload;
   const lesson = await Lesson.create({
     lessonName,
@@ -18,6 +19,7 @@ exports.createLesson = async function createLesson(sequelize, payload) {
     lessonImg,
     lessonCost,
     lessonPeriod,
+    orgID,
     lessonIntro: lessonIntro ? lessonIntro : null,
   });
   if (occupationNo) {
@@ -28,10 +30,13 @@ exports.createLesson = async function createLesson(sequelize, payload) {
     const teacher = await Teacher.findOne({ where: { teacherId: teacherId } });
     teacher.addLessons(lesson);
   }
+  const org = await Organization.findOne({ where: { orgID: orgID } });
+  org.addLessons(lesson);
   return lesson.lessonID;
 };
 exports.fetchLesson = function fetchLesson(sequelize, req) {
-  const { offset, limit } = req;
+  const { offset, limit, orgID } = req;
+  let condition = orgID ? { orgID: orgID } : {};
   return sequelize.models.Lesson.findAll({
     include: [
       {
@@ -39,6 +44,10 @@ exports.fetchLesson = function fetchLesson(sequelize, req) {
       },
       {
         model: sequelize.models.Occupation,
+      },
+      {
+        model: sequelize.models.Organization,
+        where: condition,
       },
     ],
     offset: offset ? Number(offset) : null,

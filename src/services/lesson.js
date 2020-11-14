@@ -6,6 +6,7 @@ export async function createLesson(params) {
   });
 }
 export async function getLesson(params) {
+  console.warn(params);
   return request('/api/getLesson', {
     method: 'POST',
     params,

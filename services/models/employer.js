@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     employeePhone: {
       type: DataTypes.STRING,
-      unique: true,
+      unique: 'column',
     },
     employeePassword: {
       type: DataTypes.STRING,
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     employeeNo: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: 'column',
     },
     avatar: {
       type: DataTypes.STRING,

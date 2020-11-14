@@ -29,7 +29,12 @@ async function init() {
 }
 
 init();
-const modules = [require('./router/lesson'), require('./router/login'), require('./router/user')];
+const modules = [
+  require('./router/lesson'),
+  require('./router/login'),
+  require('./router/user'),
+  require('./router/order'),
+];
 for (let module of modules) {
   module(app, sequelize);
 }

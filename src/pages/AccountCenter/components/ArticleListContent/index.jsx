@@ -3,13 +3,18 @@ import React from 'react';
 import moment from 'moment';
 import styles from './index.less';
 
-const ArticleListContent = ({ data: { content, updatedAt, avatar, owner, href } }) => (
+const ArticleListContent = ({ data: { lessonOrdTime,Lesson } }) => (
   <div className={styles.listContent}>
-    <div className={styles.description}>{content}</div>
     <div className={styles.extra}>
-      <Avatar src={avatar} size="small" />
-      <a href={href}>{owner}</a> 发布在 <a href={href}>{href}</a>
-      <em>{moment(updatedAt).format('YYYY-MM-DD HH:mm')}</em>
+      <div className={styles.lessonInfo}>
+        <img src={Lesson.lessonImg} style={{width:'80px'}} />
+        <p style={{marginLeft:'10px'}}>{Lesson.lessonName}</p>
+      </div>
+      <div>
+        <div style={{textAlign:'right'}}><span>实付款：</span><span  className={styles.description}>{Lesson.lessonCost}</span></div>
+        <span> 下单时间:</span>
+        <em>{moment(lessonOrdTime).format('YYYY-MM-DD HH:mm')}</em>
+      </div>
     </div>
   </div>
 );

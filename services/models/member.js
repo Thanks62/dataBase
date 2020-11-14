@@ -20,12 +20,12 @@ module.exports = (sequelize, DataTypes) => {
     userPhone: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: 'column',
     },
     idNum: {
       //身份证号
       type: DataTypes.STRING,
-      unique: true,
+      unique: 'column',
     },
     userPassword: {
       type: DataTypes.STRING,
@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      unique: true,
+      unique: 'column',
     },
     avatar: {
       type: DataTypes.STRING,

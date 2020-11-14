@@ -1,5 +1,17 @@
 import React from 'react';
-import { Card, Row, Col, Rate, Skeleton, Modal, Avatar, Input, Carousel, Button } from 'antd';
+import {
+  Card,
+  Row,
+  Col,
+  Rate,
+  Skeleton,
+  Modal,
+  Avatar,
+  Input,
+  Carousel,
+  Button,
+  message,
+} from 'antd';
 import {
   FireTwoTone,
   ShoppingCartOutlined,
@@ -14,12 +26,16 @@ import {
 import styles from './index.less';
 import { getLesson, getSection } from '../../services/lesson';
 import SectionList from '@/components/SectionList';
+import Pay from './component/pay';
+import { connect } from 'umi';
+import { createOrder } from '../../services/order';
 const { Search } = Input;
 const { Meta } = Card;
 class Lesson extends React.Component {
   state = {
     sectionList: [],
     listLoading: true,
+    isVisible: false,
   };
   fetchSections = () => {
     this.setState({
@@ -79,15 +95,46 @@ class Lesson extends React.Component {
       onOk() {},
     });
   };
+  buyLesson = () => {
+    this.setState({
+      isVisible: true,
+    });
+  };
+  handleOk = () => {
+    const { memberID } = this.props.currentUser;
+    const { lessonID } = this.props.data;
+    if (!memberID) {
+      message.error('请使用会员账号登录购买');
+    } else {
+      let order = {
+        memberID,
+        lessonID,
+        lessonOrdTime: new Date(),
+      };
+      createOrder(order).then((res) => {
+        if (res.status == 'ok') message.success('购课成功，请在个人中心查看课程');
+        else message.error('购课失败，请确认是否已购买过该课程');
+      });
+    }
+    this.setState({
+      isVisible: false,
+    });
+  };
+  handleCancel = () => {
+    this.setState({
+      isVisible: false,
+    });
+  };
   render() {
     const { data } = this.props;
+    const { isVisible } = this.state;
     return (
       <Col sm={12} lg={6} xs={12}>
         <Card
           hoverable="true"
           cover={<img alt={data.lessonName} src={data.lessonImg} />}
           actions={[
-            <ShoppingCartOutlined key="购课" />,
+            <ShoppingCartOutlined onClick={this.buyLesson} key="购课" />,
             <EllipsisOutlined onClick={this.fetchSections} key="详情" />,
           ]}
         >
@@ -98,10 +145,19 @@ class Lesson extends React.Component {
             />
           </Skeleton>
         </Card>
+        <Pay
+          isVisible={isVisible}
+          handleCancel={this.handleCancel}
+          handleOk={this.handleOk}
+          cost={data.lessonCost}
+        />
       </Col>
     );
   }
 }
+const LessonWrapper = connect(({ user }) => ({
+  currentUser: user.currentUser,
+}))(Lesson);
 export default class Home extends React.Component {
   state = {
     data: [
@@ -250,7 +306,7 @@ export default class Home extends React.Component {
               <Row gutter={[16, 24]}>
                 {data.length > 0
                   ? data.map((item) => {
-                      return <Lesson key={item.lessonID} data={item} />;
+                      return <LessonWrapper key={item.lessonID} data={item} />;
                     })
                   : null}
               </Row>

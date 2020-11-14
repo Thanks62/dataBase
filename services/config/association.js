@@ -1,5 +1,14 @@
 function applyAssiociation(sequelize) {
-  const { Lesson, Teacher, Occupation, Section, Organization, Employee } = sequelize.models;
+  const {
+    Lesson,
+    Teacher,
+    Member,
+    Occupation,
+    Section,
+    Organization,
+    Employee,
+    lessonOrder,
+  } = sequelize.models;
   Lesson.belongsTo(Teacher, {
     foreignKey: 'teacherNo',
     sourceKey: 'teacherNo',
@@ -39,6 +48,22 @@ function applyAssiociation(sequelize) {
   Lesson.belongsTo(Organization, {
     foreignKey: 'orgID',
     sourceKey: 'orgID',
+  });
+  Lesson.hasMany(lessonOrder, {
+    foreignKey: 'lessonID',
+    sourceKey: 'lessonID',
+  });
+  lessonOrder.belongsTo(Lesson, {
+    foreignKey: 'lessonID',
+    sourceKey: 'lessonID',
+  });
+  Member.hasMany(lessonOrder, {
+    foreignKey: 'memberID',
+    sourceKey: 'memberID',
+  });
+  lessonOrder.belongsTo(Member, {
+    foreignKey: 'memberID',
+    sourceKey: 'memberID',
   });
 }
 module.exports = { applyAssiociation };

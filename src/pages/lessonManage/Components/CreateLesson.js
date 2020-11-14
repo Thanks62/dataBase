@@ -18,7 +18,8 @@ import { getTeacher } from '../../../services/teacher';
 import { createLesson, editLesson } from '../../../services/lesson';
 import { getOccupation } from '../../../services/occupation';
 import moment from 'moment';
-export default class Create extends React.Component {
+import { connect } from 'umi';
+class Create extends React.Component {
   state = {
     fileUrl: '',
     teacherList: [],
@@ -66,9 +67,9 @@ export default class Create extends React.Component {
       lessonBegin,
       lessonLast,
       teacherId: this.state.teacherId ? Number(this.state.teacherId) : null,
+      orgID: this.props.employee.orgID,
     };
     Object.assign(value, value, data);
-    console.log(value);
     if (this.props.from == 'edit') this.editLesson(value);
     else this.createLesson(value);
   };
@@ -104,7 +105,6 @@ export default class Create extends React.Component {
     });
   }
   handleSelect = (value, option) => {
-    console.log(value);
     this.setState({
       teacherId: option.key,
     });
@@ -306,3 +306,7 @@ export default class Create extends React.Component {
     );
   }
 }
+const CreateWrapper = connect(({ user }) => ({
+  employee: user.currentUser,
+}))(Create);
+export default CreateWrapper;

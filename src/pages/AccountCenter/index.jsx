@@ -18,7 +18,6 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
         </span>
       </span>
     ),
@@ -33,7 +32,6 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
         </span>
       </span>
     ),
@@ -133,14 +131,20 @@ class AccountCenter extends Component {
   input = undefined;
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, user} = this.props;
     dispatch({
       type: 'accountCenter/fetchCurrent',
     });
-    dispatch({
-      type: 'accountCenter/fetch',
-    });
+
+    if(user.memberID){
+      dispatch({
+        type: 'accountCenter/fetch',
+        payload:user.memberID
+      });
+    }
+    
   }
+
 
   onTabChange = (key) => {
     // If you need to sync state to url
@@ -248,6 +252,7 @@ class AccountCenter extends Component {
               )}
             </Card>
           </Col>
+          {currentUser.memberID?
           <Col lg={17} md={24}>
             <Card
               className={styles.tabsCard}
@@ -259,13 +264,15 @@ class AccountCenter extends Component {
               {this.renderChildrenByTabKey(tabKey)}
             </Card>
           </Col>
+          :null}
         </Row>
       </GridContent>
     );
   }
 }
 
-export default connect(({ loading, accountCenter }) => ({
+export default connect(({ loading, accountCenter,user }) => ({
+  user:user.currentUser,
   currentUser: accountCenter.currentUser,
   currentUserLoading: loading.effects['accountCenter/fetchCurrent'],
 }))(AccountCenter);

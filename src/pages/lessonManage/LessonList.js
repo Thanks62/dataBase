@@ -3,12 +3,13 @@ import { Table, Button, Spin, Modal, message } from 'antd';
 import { getLesson, deleteLesson } from '../../services/lesson';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import EditLesson from './Components/EditLesson';
+import { connect } from 'umi';
 const { confirm } = Modal;
 function DateFormatter(text) {
   const date = new Date(text);
   return <div>{date.toLocaleDateString()}</div>;
 }
-export default class LessonList extends React.Component {
+class LessonList extends React.Component {
   state = {
     data: [],
     loading: true,
@@ -23,7 +24,7 @@ export default class LessonList extends React.Component {
     this.setState({
       loading: true,
     });
-    getLesson()
+    getLesson({ orgID: this.props.employee.orgID })
       .then((data) => {
         this.setState({
           data,
@@ -184,3 +185,7 @@ export default class LessonList extends React.Component {
     );
   }
 }
+const ListWrapper = connect(({ user }) => ({
+  employee: user.currentUser,
+}))(LessonList);
+export default ListWrapper;

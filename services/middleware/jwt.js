@@ -12,8 +12,11 @@ exports.verify = function (req, res, next) {
       return next();
     },
     (err) => {
-      res.status(401);
-      return next();
+      res.status(401).send({
+        status: 'error',
+        message: '验证失败，请重新登录',
+        error: err,
+      });
     },
   );
 };
