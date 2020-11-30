@@ -25,7 +25,9 @@ export async function deleteSection(params) {
   return request(`/api/deleteSection?sectionID=${params}`);
 }
 export async function getSection(params) {
-  return request(`/api/getSection?lessonID=${params}`);
+  return request('/api/getSection', {
+    params,
+  });
 }
 export async function editLesson(params) {
   return request(`/api/editLesson`, {

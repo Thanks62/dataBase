@@ -5,3 +5,6 @@ export async function createOrder(payload) {
     data: payload,
   });
 }
+export async function getOrder() {
+  return request('/api/lessonOrder');
+}

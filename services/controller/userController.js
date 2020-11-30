@@ -18,13 +18,8 @@ exports.employeeLogin = async function (sequelize, params) {
 };
 exports.adminLogin = async function (sequelize, params) {
   const { userName, password } = params;
-  const { Administrator, Organization } = sequelize.models;
+  const { Administrator } = sequelize.models;
   const admin = await Administrator.findOne({
-    include: [
-      {
-        model: Organization,
-      },
-    ],
     where: { adminPhone: userName },
   });
   if (admin && admin.adminPassword == password) return admin;
@@ -39,21 +34,21 @@ exports.getMember = async function (sequelize, userID) {
   return false;
 };
 exports.getEmployee = async function (sequelize, userID) {
-  const { Employee } = sequelize.models;
+  const { Employee, Organization } = sequelize.models;
   const employer = await Employee.findOne({
+    include: [
+      {
+        model: Organization,
+      },
+    ],
     where: { employeeID: userID },
   });
   if (employer) return employer;
   return false;
 };
 exports.getAdmin = async function (sequelize, userID) {
-  const { Administrator, Organization } = sequelize.models;
+  const { Administrator } = sequelize.models;
   const admin = await Administrator.findOne({
-    include: [
-      {
-        model: Organization,
-      },
-    ],
     where: { adminID: userID },
   });
   if (admin) return admin;

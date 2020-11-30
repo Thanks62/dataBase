@@ -35,8 +35,9 @@ exports.createLesson = async function createLesson(sequelize, payload) {
   return lesson.lessonID;
 };
 exports.fetchLesson = function fetchLesson(sequelize, req) {
-  const { offset, limit, orgID } = req;
+  const { offset, limit, orgID, lessonID } = req;
   let condition = orgID ? { orgID: orgID } : {};
+  let lessonCondition = lessonID ? { lessonID: lessonID } : {};
   return sequelize.models.Lesson.findAll({
     include: [
       {
@@ -52,6 +53,7 @@ exports.fetchLesson = function fetchLesson(sequelize, req) {
     ],
     offset: offset ? Number(offset) : null,
     limit: limit ? Number(limit) : null,
+    where: lessonCondition,
   });
 };
 exports.deleteLesson = function deleteLesson(sequelize, params) {

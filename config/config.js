@@ -59,7 +59,7 @@ export default defineConfig({
               path: '/Emp',
               name: '机构管理',
               icon: 'appstore',
-              authority: ['admin', 'employee'],
+              authority: ['employee'],
               routes: [
                 {
                   path: '/Emp/LessonManagement',
@@ -74,6 +74,24 @@ export default defineConfig({
               ],
             },
             {
+              path: '/Sys',
+              name: '平台管理',
+              icon: 'appstore',
+              authority: ['admin'],
+              routes: [
+                {
+                  path: '/Sys/OrderManagement',
+                  name: '订单管理',
+                  component: './orderManagement',
+                },
+                {
+                  path: '/Sys/SysManagement',
+                  name: '平台数据',
+                  component: './teacherManage',
+                },
+              ],
+            },
+            {
               name: '个人中心',
               icon: 'smile',
               path: '/accountcenter',
@@ -82,7 +100,7 @@ export default defineConfig({
             },
             {
               name: '课程',
-              path: '/lesson',
+              path: '/lesson/:lessonID/:chapterID',
               component: './Lesson',
               hideInMenu: true,
             },

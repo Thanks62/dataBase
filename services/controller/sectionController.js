@@ -17,9 +17,13 @@ exports.deleteSection = async function (sequelize, payload) {
 };
 exports.getSection = async function (sequelize, payload) {
   const { Section, Lesson } = sequelize.models;
+  const { chapterID, lessonID } = payload;
+  let condition = lessonID ? { lessonID: lessonID } : {};
+  condition = chapterID ? Object.assign(condition, { sectionID: chapterID }) : condition;
+  console.log(condition);
   return await Section.findAll({
     include: Lesson,
-    where: { lessonID: payload.lessonID },
+    where: condition,
     order: ['order'],
   });
 };

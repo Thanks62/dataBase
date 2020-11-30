@@ -45,7 +45,7 @@ const Articles = (props) => {
         <List.Item
           key={item.lessonOrderNo}
           actions={[
-            <IconText key="star" icon={<PlayCircleTwoTone />} text="观看" />,
+            <Link to={`/lesson/${item.Lesson?.lessonID}/0`}><IconText key="star" icon={<PlayCircleTwoTone />} text="观看" /></Link>,
             <div onClick={()=>{setVisible(true)}}><IconText key="message" icon={<MessageFilled />} text="评价" /></div>,
             <IconText key="status" text={item.lessonOrdStatus} />,
           ]}
