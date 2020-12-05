@@ -7,6 +7,7 @@ import { getAuthority } from './authority';
 let Authorized = RenderAuthorize(getAuthority()); // Reload the rights component
 
 const reloadAuthorized = () => {
+  console.warn('getAuthority', getAuthority());
   Authorized = RenderAuthorize(getAuthority());
 };
 /**

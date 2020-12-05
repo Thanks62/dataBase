@@ -54,6 +54,7 @@ export default defineConfig({
               component: './Home',
               name: '首页',
               icon: 'smile',
+              authority: ['user'],
             },
             {
               path: '/Emp',
@@ -70,6 +71,11 @@ export default defineConfig({
                   path: '/Emp/TeacherManagement',
                   name: '讲师管理',
                   component: './teacherManage',
+                },
+                {
+                  path: '/Emp/OrgManagement',
+                  name: '机构信息',
+                  component: './orgManage',
                 },
               ],
             },

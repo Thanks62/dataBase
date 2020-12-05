@@ -17,7 +17,6 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
   if (!authority) {
     return target;
   } // 数组处理
-
   if (Array.isArray(authority)) {
     if (Array.isArray(currentAuthority)) {
       if (currentAuthority.some((item) => authority.includes(item))) {
@@ -26,7 +25,6 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
     } else if (authority.includes(currentAuthority)) {
       return target;
     }
-
     return Exception;
   } // string 处理
 

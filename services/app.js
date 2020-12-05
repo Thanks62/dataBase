@@ -34,6 +34,7 @@ const modules = [
   require('./router/login'),
   require('./router/user'),
   require('./router/order'),
+  require('./router/org'),
 ];
 for (let module of modules) {
   module(app, sequelize);
