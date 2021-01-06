@@ -1,3 +1,5 @@
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 exports.createLesson = async function createLesson(sequelize, payload) {
   const { Lesson, Teacher, Occupation, Organization } = sequelize.models;
   const {
@@ -35,9 +37,11 @@ exports.createLesson = async function createLesson(sequelize, payload) {
   return lesson.lessonID;
 };
 exports.fetchLesson = function fetchLesson(sequelize, req) {
-  const { offset, limit, orgID, lessonID } = req;
+  const { offset, limit, orgID, lessonID, keyword } = req;
   let condition = orgID ? { orgID: orgID } : {};
   let lessonCondition = lessonID ? { lessonID: lessonID } : {};
+  // console.log(keyword);
+  if (keyword) Object.assign(lessonCondition, { lessonName: { [Op.like]: '%' + keyword + '%' } });
   return sequelize.models.Lesson.findAll({
     include: [
       {

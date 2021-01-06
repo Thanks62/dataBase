@@ -45,7 +45,7 @@ export default class CreateChapter extends React.Component {
       message.error('请先创建课程！');
       return;
     }
-    getSection(this.props.lessonID)
+    getSection({ lessonID: this.props.lessonID })
       .then((res) => {
         this.setState({
           sectionList: res.data,

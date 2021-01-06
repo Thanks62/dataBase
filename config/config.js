@@ -91,9 +91,29 @@ export default defineConfig({
                   component: './orderManagement',
                 },
                 {
-                  path: '/Sys/SysManagement',
+                  path: '/Sys/MemberManagement',
+                  name: '会员管理',
+                  component: './memberManagement',
+                },
+                {
+                  path: '/Sys/EmployeeManagement',
+                  name: '职员管理',
+                  component: './employeeManagement',
+                },
+                {
+                  path: '/Sys/AdminManagement',
+                  name: '管理员',
+                  component: './adminManagement',
+                },
+                {
+                  path: '/Sys/OrgManagement',
+                  name: '机构管理',
+                  component: './orgManagement',
+                },
+                {
+                  path: '/Sys/SysData',
                   name: '平台数据',
-                  component: './teacherManage',
+                  component: './sysData',
                 },
               ],
             },

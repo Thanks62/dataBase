@@ -10,6 +10,7 @@ import {
   Input,
   Carousel,
   Button,
+  Spin,
   message,
 } from 'antd';
 import {
@@ -41,7 +42,7 @@ class Lesson extends React.Component {
     this.setState({
       listLoading: true,
     });
-    getSection(this.props.data.lessonID)
+    getSection({ lessonID: this.props.data.lessonID })
       .then((res) => {
         this.setState({
           sectionList: res.data,
@@ -205,6 +206,7 @@ export default class Home extends React.Component {
       //   lessonStuNum: 3400,
       // },
     ],
+    keyword: '',
     banner: [
       'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/e6c98620-19d4-11eb-b997-9918a5dda011.jpg',
       'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-yunzhi/106d0240-19d5-11eb-b997-9918a5dda011.jpg',
@@ -233,35 +235,23 @@ export default class Home extends React.Component {
       },
     ],
     loadMoreState: true,
+    loading: false,
   };
   componentDidMount() {
-    getLesson({ limit: 12, offset: 0 })
-      .then((data) => {
-        if (data) {
-          this.setState({
-            data,
-            loadMoreState: true,
-          });
-        } else {
-          this.setState({
-            loadMoreState: false,
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.getLessonList({ limit: 12, offset: 0 });
   }
-  loadMore = () => {
-    getLesson({ limit: 12, offset: this.state.data.length })
-      .then((res) => {
-        if (res.length != 0) {
+  getLessonList = (params) => {
+    getLesson(params)
+      .then((data) => {
+        if (data.length != 0) {
           this.setState({
-            data: this.state.data.concat(res),
+            data: this.state.data.filter((item) => item.loading !== true).concat(data),
             loadMoreState: true,
+            loading: false,
           });
         } else {
           this.setState({
+            loading: false,
             loadMoreState: false,
           });
         }
@@ -270,14 +260,30 @@ export default class Home extends React.Component {
         console.log(err);
       });
   };
+  search = (e) => {
+    const { value } = e.target;
+    this.setState({
+      keyword: value,
+      data: [],
+      loading: true,
+    });
+    this.getLessonList({ limit: 12, offset: 0, keyword: value });
+  };
+  loadMore = () => {
+    this.getLessonList({ limit: 12, offset: this.state.data.length, keyword: this.state.keyword });
+  };
   render() {
-    const { data, banner, category, loadMoreState } = this.state;
+    const { data, banner, category, loadMoreState, loading } = this.state;
     return (
       <>
         <Card>
           <Row justify="center" gutter={[16, 16]}>
             <Col span={14}>
-              <Search placeholder="JAVA高级课程" style={{ borderRadius: '20px', height: '40px' }} />
+              <Search
+                placeholder="JAVA高级课程"
+                style={{ borderRadius: '20px', height: '40px' }}
+                onChange={this.search}
+              />
             </Col>
             <Col span={24}>
               <Carousel autoplay>
@@ -303,13 +309,15 @@ export default class Home extends React.Component {
             </Col>
             <Col span={24}>
               <span className={styles.hot_class}>热门课程</span>
-              <Row gutter={[16, 24]}>
-                {data.length > 0
-                  ? data.map((item) => {
-                      return <LessonWrapper key={item.lessonID} data={item} />;
-                    })
-                  : null}
-              </Row>
+              <Spin spinning={loading}>
+                <Row gutter={[16, 24]}>
+                  {data.length > 0
+                    ? data.map((item) => {
+                        return <LessonWrapper key={item.lessonID} data={item} />;
+                      })
+                    : null}
+                </Row>
+              </Spin>
             </Col>
             <Col span={24} style={{ textAlign: 'center' }}>
               {data.length >= 12 && loadMoreState ? (

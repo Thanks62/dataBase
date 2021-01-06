@@ -65,7 +65,7 @@ export default class Lesson extends React.Component {
           <div className={styles.mainCtn}>
             <div className={styles.video}>
               {currentChapter ? (
-                <video src={currentChapter.url} />
+                <video src={currentChapter.url} controls="controls" />
               ) : (
                 <div>当前课程暂未开放本章节课程</div>
               )}

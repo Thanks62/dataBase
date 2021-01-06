@@ -8,3 +8,12 @@ export async function queryCurrent() {
 export async function queryNotices() {
   return request('/api/notices');
 }
+export async function getAllMember() {
+  return request('/api/allMember');
+}
+export async function getAllEmployee() {
+  return request('/api/allEmployee');
+}
+export async function getAllAdmin() {
+  return request('/api/allAdmin');
+}

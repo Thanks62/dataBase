@@ -33,6 +33,10 @@ exports.getMember = async function (sequelize, userID) {
   if (member) return member;
   return false;
 };
+exports.getAllMember = async function (sequelize) {
+  const { Member } = sequelize.models;
+  return await Member.findAll();
+};
 exports.getEmployee = async function (sequelize, userID) {
   const { Employee, Organization } = sequelize.models;
   const employer = await Employee.findOne({
@@ -46,6 +50,16 @@ exports.getEmployee = async function (sequelize, userID) {
   if (employer) return employer;
   return false;
 };
+exports.getAllEmployee = async function (sequelize) {
+  const { Employee, Organization } = sequelize.models;
+  return await Employee.findAll({
+    include: [
+      {
+        model: Organization,
+      },
+    ],
+  });
+};
 exports.getAdmin = async function (sequelize, userID) {
   const { Administrator } = sequelize.models;
   const admin = await Administrator.findOne({
@@ -53,6 +67,10 @@ exports.getAdmin = async function (sequelize, userID) {
   });
   if (admin) return admin;
   return false;
+};
+exports.getAllAdmin = async function (sequelize) {
+  const { Administrator } = sequelize.models;
+  return await Administrator.findAll();
 };
 exports.addMember = async function (sequelize, payload) {
   const { Member } = sequelize.models;

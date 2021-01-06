@@ -4,9 +4,7 @@ exports.createOrder = async function createOrder(sequelize, payload) {
   await lessonOrder.create({
     ...payload,
   });
-  console.log(lessonID);
   const lesson = await Lesson.findOne({ where: { lessonID: lessonID } });
-  console.log(lesson);
   await lesson.increment('lessonStuNum');
 };
 exports.getOrder = async function getOrder(sequelize, payload) {

@@ -1,5 +1,5 @@
 {
-  "name": "ant-design-pro",
+  "name": "yunzhi",
   "version": "4.2.1",
   "private": true,
   "description": "An out-of-box UI solution for enterprise applications",
@@ -50,7 +50,9 @@
     "@ant-design/pro-layout": "^6.4.16",
     "@ant-design/pro-table": "^2.7.2",
     "@umijs/route-utils": "^1.0.32",
+    "ant-design-pro": "^2.3.2",
     "antd": "^4.6.3",
+    "bizcharts": "^4.0.17",
     "body-parser": "^1.19.0",
     "classnames": "^2.2.6",
     "lodash": "^4.17.11",

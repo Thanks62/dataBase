@@ -47,7 +47,9 @@ module.exports = (app, sequelize) => {
         });
       })
       .catch((err) => {
-        res.status(500).send(err);
+        res.status(500).send({
+          errMsg: err,
+        });
       });
   });
   app.get('/api/getSection', (req, res) => {
